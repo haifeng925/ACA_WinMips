@@ -1,1 +1,1 @@
-C:\Users\Haifeng\Dropbox\Studium\SoSe2013\ACA\ass1\winmips64\mult.s
+Z:\home\haifeng\islet\aca\ACA_WinMips\codes\sum.s
