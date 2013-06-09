@@ -1,39 +1,47 @@
         .data
 N_COEFFS:  .word   5
-coeff:     .double 0.25 , 0.5 , 1.0 , 0.5 , 0.25
 N_SAMPLES: .word   5
-
-; sample:    .double 1.0 , 2.0 , 1.0 , 2.0 , 1.0
-; result:    .double 0.0 , 0.0 , 0.0 , 0.0 , 0.0
- list:   .word 15, 0, 1, 2, 6, -2, 4, 7, 3, 7
- listxx:   .word 5, 0, 1, 2, 6, -2, 4, 7, 3, 7
+coeff:     .double 0.25 , 0.5 , 1.0 , 0.5 , 0.25
+sample:     .double 1.0,  2.0,  1.0,  2.0, 1.0 
+result:     .double 0,  0,  0,  0,  0
+norm1:      .double 0
+norm2:      .double 0
+d_zero:     .double 0.0
 
         .text
 main: 
-       
-        ld $t5, listxx(r0)
-        ld $t1, N_SAMPLES(r0)
-        ld $t2, N_COEFFS(r0)
-      ;  slt r5, r4, r3 ; if N_COEFFS < N_SAMPLES $t2 = 1, else $t2 = 0;
-      ;  bnez r5, printresult ; if t2 != 0, jump to printresult
-        dsub $t3, $t1, $t2
-        ;sd $t3, result(r0)
+        ld    r1, N_SAMPLES(r0)
+        ld    r2, N_COEFFS(r0)
+        slt   r3, r2, r1 ; if N_COEFFS < N_SAMPLES $t3 = 1, else $t3 = 0;
+        bnez  r3, printresult ; if t3 != 0, jump to printresult
         
-        daddi r1, r0, 0
-        ld r2, list(r1); load arrays
-        daddi r1, r1, 8
-        ld r2, list(r1)
-        daddi r1, r1, 8
-        ld r2, list(r1)
-        daddi r1, r1, 8
-        ld r2, list(r1)
-        halt
-        ; bltz r5, printresult
-; smooth: 
+        mtc1  r0, f1                ;norm1
+        mtc1  r0, f2                ;norm2
+ 
+        daddi r3, r0, 1             ;i=1
+        dsub  r4, r2, r3            ;r4 = N_COEFFS-1 
+for_norm2:
+        slt   r5, r3, r4
+        beqz  r5, norm1        ;if i<N_COEFFS-1, jump to norm1_left
+        dsll  r6, r3, 3             ; i*8
+        l.d   f3, coeff(r6)         ; f3 = coeff[i]
+        mtc1  r0, f0                ; move r0 to f0=0;
+        c.lt.d f3, f0
+        bc1t  n2_negativ_coeff 
+        add.d f2, f2, f3          
+        daddi r3, r3, 1            ;i++
+        j     for_norm2
+n2_negativ_coeff:
+        mfc1  r0, f0
+        sub.d f0, f0, f3
+        add.d f2, f2, f3
+        daddi r3, r3, 1
+        j     for_norm2
+
+norm1:        
         
 
-; printresult:
-;          j Exit
-; Exit:
-;         halt
 
+        
+printresult:
+    halt
