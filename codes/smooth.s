@@ -21,21 +21,23 @@ main:
         mtc1  r0, f0                ; move r0 to f0=0;
 
 for_norm2:
-        slt   r5, r3, r4
-        beqz  r5, norm1        ;if i<N_COEFFS-1, jump to norm1_left
+        ;slt   r5, r3, r4
+        ;beqz  r5, norm1        ;if i<N_COEFFS-1, jump to norm1_left
         dsll  r6, r3, 3             ; i*8
         l.d   f3, coeff(r6)         ; f3 = coeff[i]
         c.lt.d f3, f0
         bc1t  n2_negativ_coeff 
         add.d f2, f2, f3          
-        daddi r3, r3, 1            ;i++
-        j     for_norm2
-
+        ; daddi r3, r3, 1            ;i++
+        ; j     for_norm2
+        j    add_i
 n2_negativ_coeff:
         sub.d f3, f0, f3
         add.d f2, f2, f3
+add_i:
         daddi r3, r3, 1
-        j     for_norm2
+        slt   r5, r3, r4
+        bnez  r5 ,    for_norm2
 
 
 norm1:
