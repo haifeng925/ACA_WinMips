@@ -18,10 +18,12 @@ main:
         bnez  r3, exit ; if t3 != 0, jump to printresult
         daddi r3, r0, 1             ;i=1
         dsub  r4, r2, r3            ;r4 = N_COEFFS-1 
+<<<<<<< HEAD
         mtc1  r0, f0                ; move r0 to f0=0;
 
+=======
+>>>>>>> parent of 017cdc1... 830 cycles
         mtc1  r0, f0                ; move r0 to f0=0;
-
 
 for_norm2:
         slt   r5, r3, r4
@@ -125,7 +127,7 @@ calcu_with_norm1:
 
 last_two_result:                    ; i= n-2
         mtc1  r0, f4                 ; f4 for temp result
-     ;   daddi r6, r3, 3              
+        daddi r6, r3, 3              
 
         daddi r5, r0, 1             ; j=1
 for_with_last_second:
@@ -152,4 +154,4 @@ cal_last_second:
         l.d   f3, sample(r11)
         s.d  f3, result(r11)
 exit:
-       halt
+        halt
