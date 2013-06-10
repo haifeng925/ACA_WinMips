@@ -18,9 +18,7 @@ main:
         bnez  r3, exit ; if t3 != 0, jump to printresult
         daddi r3, r0, 1             ;i=1
         dsub  r4, r2, r3            ;r4 = N_COEFFS-1 
-
         mtc1  r0, f0                ; move r0 to f0=0;
-
 
 for_norm2:
         slt   r5, r3, r4
@@ -67,9 +65,8 @@ else_last_norm1:
 cal_result:
         daddu r3, r0, r0            ; i=0
         l.d   f3, sample(r3)
-        daddi r3, r3, 1             ; r3 = 1, i=1
-
         s.d  f3, result(r3)        ; i=0, result[0] = sample[0]
+        daddi r3, r3, 1             ; r3 = 1, i=1
         dsll  r6, r3, 3
 
         daddi r5, r0, 1             ; j = 1;
@@ -83,28 +80,24 @@ for_within_i_1:
         dsll  r9, r5, 3             ;&coeff[j]
         l.d   f5, sample(r8)
         l.d   f6, coeff(r9)
-        daddi r5, r5, 1
-
         mul.d f7, f5, f6
-
         add.d f4, f4, f7
+        daddi r5, r5, 1
         j     for_within_i_1
 calculate_with_norm2:
+        div.d f4, f4, f2            ; result[1]/=norm2
+        s.d  f4, result(r6)
         daddi r3, r3, 1             ; r3 = 2 = i
 
-        div.d f4, f4, f2            ; result[1]/=norm2
-
-        s.d  f4, result(r6)
         ;; for n: 2 -> n-2
 
         dsub r6, r1, r3             ; r6 = N_SAMPLES - 2
 normal_result:
         slt  r7, r3, r6             ; r3=i
-        mtc1 r0, f4                 ; f4 for temp result
-        daddu r5, r0, r0            ; r5 = j = 0
         beqz r7, last_two_result
 
-
+        mtc1 r0, f4                 ; f4 for temp result
+        daddu r5, r0, r0            ; r5 = j = 0
 for_within_normal:
         slt  r7, r5, r2             ; r2 = N_COEFFS
         beqz r7, calcu_with_norm1
@@ -112,21 +105,19 @@ for_within_normal:
         dsub  r9, r3, r8
         daddu r9, r9, r5            ; r9 = i-2+j
         dsll  r9, r9, 3
-        l.d   f5, sample(r9)
-
         dsll  r10, r5, 3
+        l.d   f5, sample(r9)
         l.d   f6, coeff(r10)
         mul.d f7, f5, f6
-        add.d f4, f4, f7
+        add.d  f4, f4, f7
         daddi r5, r5, 1
         j     for_within_normal
 
 calcu_with_norm1:
         div.d f4, f4, f1
         dsll  r11, r3, 3
-        daddi r3, r3, 1
-
         s.d  f4, result(r11)
+        daddi r3, r3, 1
         j     normal_result
 
 last_two_result:                    ; i= n-2
@@ -143,20 +134,16 @@ for_with_last_second:
         dsll  r9, r9, 3
         dsll  r10, r5, 3
         l.d   f5, sample(r9)
-
         l.d   f6, coeff(r10)
-
         mul.d f7, f5, f6
-        daddi  r5, r5, 1
-
         add.d f4, f4, f7
+        daddi  r5, r5, 1
         j     for_with_last_second
 cal_last_second:
-        dsll  r11, r3, 3
-        daddi r3, r3, 1
-
         div.d f4, f4, f2
+        dsll  r11, r3, 3
         s.d  f4, result(r11)
+        daddi r3, r3, 1
 
         dsll  r11, r3, 3
         l.d   f3, sample(r11)
