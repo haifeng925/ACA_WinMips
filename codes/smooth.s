@@ -20,27 +20,49 @@ main:
  
         daddi r3, r0, 1             ;i=1
         dsub  r4, r2, r3            ;r4 = N_COEFFS-1 
+        mtc1  r0, f0                ; move r0 to f0=0;
+
 for_norm2:
         slt   r5, r3, r4
         beqz  r5, norm1        ;if i<N_COEFFS-1, jump to norm1_left
         dsll  r6, r3, 3             ; i*8
         l.d   f3, coeff(r6)         ; f3 = coeff[i]
-        mtc1  r0, f0                ; move r0 to f0=0;
         c.lt.d f3, f0
         bc1t  n2_negativ_coeff 
         add.d f2, f2, f3          
         daddi r3, r3, 1            ;i++
         j     for_norm2
+
 n2_negativ_coeff:
         sub.d f3, f0, f3
         add.d f2, f2, f3
         daddi r3, r3, 1
         j     for_norm2
 
-norm1:        
-        l.d f3
 
+norm1:
+        l.d   f3, coeff(r0)
+        c.lt.d  f3, f0
+        bc1t  else_norm1
+        add.d  f1, f2, f3
+        j     last_norm1
+else_norm1:
+        sub.d f3, f0, f3
+        add.d f1, f2, f3
 
+last_norm1:
+        dsll  r6, r3, 3
+        l.d   f3, coeff(r6)
+        c.lt.d  f3, f0
+        bc1t  else_last_norm1
+        add.d f1, f1, f3
+        j     result 
+
+else_last_norm1:
+        sub.d f3, f0, f3
+        add.d f1, f1, f3
+
+result:
 
 printresult:
     halt
