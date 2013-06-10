@@ -75,8 +75,8 @@ cal_result:
         mtc1  r0, f4                ; f4 for temp result
 
 for_within_i_1:
-        slt   r7, r5, r4
-        beqz  r7, calculate_with_norm2
+      ;  slt   r7, r5, r4
+      ;  beqz  r7, calculate_with_norm2
         dsub  r8, r5, r3            
         dsll  r8, r8, 3             ;&sample[i-2+j] sample[j-1]
         dsll  r9, r5, 3             ;&coeff[j]
@@ -85,7 +85,9 @@ for_within_i_1:
         mul.d f7, f5, f6
         add.d f4, f4, f7
         daddi r5, r5, 1
-        j     for_within_i_1
+      ;  j     for_within_i_1
+        slt   r7, r5, r4
+        bnez  r7, calculate_with_norm2
 calculate_with_norm2:
         div.d f4, f4, f2            ; result[1]/=norm2
         s.d  f4, result(r6)
@@ -95,14 +97,14 @@ calculate_with_norm2:
 
         dsub r6, r1, r3             ; r6 = N_SAMPLES - 2
 normal_result:
-        slt  r7, r3, r6             ; r3=i
-        beqz r7, last_two_result
+      ;  slt  r7, r3, r6             ; r3=i
+      ;  beqz r7, last_two_result
 
         mtc1 r0, f4                 ; f4 for temp result
         daddu r5, r0, r0            ; r5 = j = 0
 for_within_normal:
-        slt  r7, r5, r2             ; r2 = N_COEFFS
-        beqz r7, calcu_with_norm1
+       ; slt  r7, r5, r2             ; r2 = N_COEFFS
+       ; beqz r7, calcu_with_norm1
         daddi r8, r0, 2
         dsub  r9, r3, r8
         daddu r9, r9, r5            ; r9 = i-2+j
@@ -113,14 +115,18 @@ for_within_normal:
         mul.d f7, f5, f6
         add.d  f4, f4, f7
         daddi r5, r5, 1
-        j     for_within_normal
+        slt   r7, r5, r2
+        bnez  r7, for_within_normal
+        ;j     for_within_normal
 
 calcu_with_norm1:
         div.d f4, f4, f1
         dsll  r11, r3, 3
         s.d  f4, result(r11)
         daddi r3, r3, 1
-        j     normal_result
+        slt   r7, r3, r6
+        bnez  r7, normal_result
+;        j     normal_result
 
 last_two_result:                    ; i= n-2
         mtc1  r0, f4                 ; f4 for temp result
@@ -128,8 +134,8 @@ last_two_result:                    ; i= n-2
 
         daddi r5, r0, 1             ; j=1
 for_with_last_second:
-        slt   r7, r5, r4             ;r4 N_COEFFS -1
-        beqz  r7, cal_last_second
+       ; slt   r7, r5, r4             ;r4 N_COEFFS -1
+       ; beqz  r7, cal_last_second
         daddi r8, r0, 2
         dsub  r9, r3, r8
         daddu r9, r9, r5
@@ -140,7 +146,9 @@ for_with_last_second:
         mul.d f7, f5, f6
         add.d f4, f4, f7
         daddi  r5, r5, 1
-        j     for_with_last_second
+        slt   r7, r5, r4
+        bnez  r7, for_with_last_second
+      ;  j     for_with_last_second
 cal_last_second:
         div.d f4, f4, f2
         dsll  r11, r3, 3
