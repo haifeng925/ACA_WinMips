@@ -20,6 +20,9 @@ main:
         dsub  r4, r2, r3            ;r4 = N_COEFFS-1 
         mtc1  r0, f0                ; move r0 to f0=0;
 
+        mtc1  r0, f0                ; move r0 to f0=0;
+
+
 for_norm2:
         slt   r5, r3, r4
         beqz  r5, norm1        ;if i<N_COEFFS-1, jump to norm1_left
