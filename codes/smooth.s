@@ -16,10 +16,6 @@ main:
         ld    r2, N_COEFFS(r0)
         slt   r3, r1, r2 ; if N_COEFFS < N_SAMPLES $t3 = 1, else $t3 = 0;
         bnez  r3, exit ; if t3 != 0, jump to printresult
-        
-        mtc1  r0, f1                ;norm1
-        mtc1  r0, f2                ;norm2
- 
         daddi r3, r0, 1             ;i=1
         dsub  r4, r2, r3            ;r4 = N_COEFFS-1 
         mtc1  r0, f0                ; move r0 to f0=0;
