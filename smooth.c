@@ -1,10 +1,16 @@
 #include <stdio.h>
 
-#define N_SAMPLES	5
+/* #define N_SAMPLES	5 */
+/* #define N_COEFFS	5 */
+
+/* double	sample[N_SAMPLES] = {1, 2, 1, 2, 1}; */
+/* double	coeff[N_COEFFS]= {0.25,0.5, 1, 0.5,0.25}; */
+/* double	result[N_SAMPLES]; */
+#define N_SAMPLES	10
 #define N_COEFFS	5
 
-double	sample[N_SAMPLES] = {1, 2, 1, 2, 1};
-double	coeff[N_COEFFS]= {0.25,0.5, 1, 0.5,0.25};
+double	sample[N_SAMPLES] = { 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 , 10};
+double	coeff[N_COEFFS]= {0.5 , 1.0 , 1.5 , 1.0 , 0.5};
 double	result[N_SAMPLES];
 
 void smooth(double sample[], double coeff[], double result[], int n)

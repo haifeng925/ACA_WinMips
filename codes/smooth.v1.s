@@ -1,21 +1,16 @@
         .data
-; N_COEFFS:  .word   5
-; N_SAMPLES: .word   5
-; coeff:     .double 0.25 , 0.5 , 1.0 , 0.5 , 0.25
-; sample:     .double 1.0,  2.0,  1.0,  2.0, 1.0 
-; result:     .double 0,  0,  0,  0,  0
-N_COEFFS: .word 5
-N_SAMPLES: .word 10
-coeff: .double 0.5, 1.0, 1.5, 1.0, 0.5
-sample: .double 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
-result: .double 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+N_COEFFS:  .word   5
+N_SAMPLES: .word   5
+coeff:     .double 0.25 , 0.5 , 1.0 , 0.5 , 0.25
+sample:     .double 1.0,  2.0,  1.0,  2.0, 1.0 
+result:     .double 0,  0,  0,  0,  0
         .text
 main: 
         
         ld    r1, N_SAMPLES(r0)
         ld    r2, N_COEFFS(r0)
-        slt   r3, r1, r2 ; if N_COEFFS < N_SAMPLES $t3 = 1, else $t3 = 0;
-        bnez  r3, exit ; if t3 != 0, jump to printresult
+        slt   r3, r2, r1 ; if N_COEFFS < N_SAMPLES $t3 = 1, else $t3 = 0;
+        bnez  r3, printresult ; if t3 != 0, jump to printresult
         
         mtc1  r0, f1                ;norm1
         mtc1  r0, f2                ;norm2
@@ -63,8 +58,6 @@ last_norm1:
 else_last_norm1:
         sub.d f3, f0, f3
         add.d f1, f1, f3
-
-
 
 cal_result:
         daddu r3, r0, r0            ; i=0
@@ -152,5 +145,5 @@ cal_last_second:
         dsll  r11, r3, 3
         l.d   f3, sample(r11)
         s.d  f3, result(r11)
-exit:
-        halt
+printresult:
+    halt

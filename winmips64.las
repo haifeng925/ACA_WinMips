@@ -1,1 +1,1 @@
-Z:\home\haifeng\islet\aca\ACA_WinMips\codes\sum.s
+Z:\home\haifeng\islet\aca\ACA_WinMips\codes\smooth.s
