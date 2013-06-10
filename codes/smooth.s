@@ -32,16 +32,15 @@ for_norm2:
         daddi r3, r3, 1            ;i++
         j     for_norm2
 n2_negativ_coeff:
-        mfc1  r0, f0
-        sub.d f0, f0, f3
+        sub.d f3, f0, f3
         add.d f2, f2, f3
         daddi r3, r3, 1
         j     for_norm2
 
 norm1:        
-        
+        l.d f3
 
 
-        
+
 printresult:
     halt
